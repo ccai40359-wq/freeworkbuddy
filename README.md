@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/logo.png" width="150" alt="freeworkbuddy logo"></p>
+
 # freeworkbuddy
 
 > 把 **WorkBuddy / CodeBuddy（腾讯代码助手）** 的订阅转换成 **OpenAI 兼容 API**，自带多账号管理面板、API Key 管理、Docker 一键部署。
