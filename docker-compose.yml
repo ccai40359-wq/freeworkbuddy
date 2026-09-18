@@ -1,0 +1,26 @@
+services:
+  webbuddy:
+    build: .
+    container_name: webbuddy-webui
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      WEBBUDDY_DATA_DIR: /var/lib/webbuddy
+      WEBBUDDY_SECURE_COOKIE: "true"
+    ports:
+      - "127.0.0.1:8788:8788"
+    volumes:
+      - ./data:/var/lib/webbuddy
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - >-
+          import urllib.request;
+          urllib.request.urlopen('http://127.0.0.1:8788/login', timeout=3)
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 15s

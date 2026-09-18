@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>WebBuddy Admin</title>
+<style>
+:root {
+  --bg: #101311;
+  --surface: #171b19;
+  --surface-raised: #1e2421;
+  --border: #303833;
+  --border-strong: #46524b;
+  --text: #eef2ef;
+  --muted: #99a49e;
+  --accent: #45c48b;
+  --accent-hover: #5bd39b;
+  --accent-ink: #07130d;
+  --warning: #e3b04b;
+  --danger: #ff7c72;
+}
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: 0;
+}
+button, input { font: inherit; letter-spacing: 0; }
+.page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 28px clamp(20px, 5vw, 72px);
+}
+.topbar, .footer {
+  width: min(1080px, 100%);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.brand-mark {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #587064;
+  border-radius: 8px;
+  background: #1b2822;
+  color: var(--accent);
+  font-weight: 800;
+  font-size: 12px;
+}
+.brand-name { font-size: 14px; font-weight: 700; }
+.brand-meta { color: var(--muted); font-size: 12px; margin-top: 2px; }
+.service-state { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; }
+.service-state::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px rgba(69, 196, 139, .12);
+}
+.login-layout {
+  width: min(1080px, 100%);
+  margin: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(340px, 420px);
+  gap: clamp(56px, 9vw, 112px);
+  align-items: center;
+  padding: 72px 0;
+}
+.context { max-width: 520px; }
+.eyebrow {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.context h1 {
+  margin: 0;
+  max-width: 500px;
+  font-size: clamp(38px, 5vw, 64px);
+  line-height: 1.04;
+  font-weight: 760;
+}
+.context p {
+  margin: 22px 0 0;
+  max-width: 460px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+.context-line {
+  width: 96px;
+  height: 3px;
+  margin-top: 32px;
+  background: var(--warning);
+}
+.login-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 32px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .28);
+}
+.panel-kicker { color: var(--muted); font-size: 12px; font-weight: 700; }
+.login-panel h2 { margin: 8px 0 6px; font-size: 24px; }
+.panel-subtitle { margin: 0 0 26px; color: var(--muted); font-size: 13px; }
+.field { margin-bottom: 18px; }
+.field label {
+  display: block;
+  margin-bottom: 8px;
+  color: #cdd5d0;
+  font-size: 13px;
+  font-weight: 650;
+}
+.input-wrap { position: relative; }
+.field input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  outline: none;
+  background: #111513;
+  color: var(--text);
+  font-size: 14px;
+  transition: border-color .15s, box-shadow .15s;
+}
+.field input:hover { border-color: var(--border-strong); }
+.field input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(69, 196, 139, .12);
+}
+.field input::placeholder { color: #69746e; }
+.password-input { padding-right: 66px !important; }
+.reveal {
+  position: absolute;
+  right: 7px;
+  top: 7px;
+  height: 34px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 12px;
+}
+.reveal:hover { background: var(--surface-raised); color: var(--text); }
+.submit {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 4px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  cursor: pointer;
+  font-weight: 800;
+  transition: background .15s, transform .15s;
+}
+.submit:hover { background: var(--accent-hover); }
+.submit:active { transform: translateY(1px); }
+.submit:disabled { cursor: wait; opacity: .65; }
+.error {
+  display: none;
+  min-height: 38px;
+  margin-top: 14px;
+  padding: 9px 11px;
+  border: 1px solid rgba(255, 124, 114, .35);
+  border-radius: 6px;
+  background: rgba(255, 124, 114, .08);
+  color: var(--danger);
+  font-size: 13px;
+  line-height: 18px;
+}
+.error.show { display: block; }
+.footer { padding-top: 20px; color: #727d77; font-size: 11px; }
+.footer span:last-child { font-variant-numeric: tabular-nums; }
+@media (max-width: 820px) {
+  .page { padding: 22px 20px; }
+  .login-layout { grid-template-columns: 1fr; gap: 34px; padding: 52px 0; }
+  .context { max-width: 600px; }
+  .context h1 { font-size: 40px; }
+  .context p { margin-top: 14px; }
+  .context-line { margin-top: 22px; }
+  .login-panel { width: 100%; max-width: 520px; }
+}
+@media (max-width: 480px) {
+  .service-state, .footer span:last-child { display: none; }
+  .login-layout { padding: 34px 0; }
+  .context h1 { font-size: 34px; }
+  .login-panel { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">WB</div>
+      <div>
+        <div class="brand-name">WebBuddy</div>
+        <div class="brand-meta">Proxy Console</div>
+      </div>
+    </div>
+    <div class="service-state">管理服务在线</div>
+  </header>
+
+  <main class="login-layout">
+    <section class="context" aria-labelledby="page-title">
+      <div class="eyebrow">Control Plane</div>
+      <h1 id="page-title">管理代理服务</h1>
+      <p>账号池、访问密钥与运行策略统一在这里维护。</p>
+      <div class="context-line"></div>
+    </section>
+
+    <section class="login-panel" aria-labelledby="login-title">
+      <div class="panel-kicker">ADMIN ACCESS</div>
+      <h2 id="login-title">管理员登录</h2>
+      <p class="panel-subtitle">使用服务器管理员凭据继续</p>
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="username">用户名</label>
+          <div class="input-wrap">
+            <input id="username" name="username" type="text" autocomplete="username" spellcheck="false" placeholder="输入管理员用户名" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="password">密码</label>
+          <div class="input-wrap">
+            <input class="password-input" id="password" name="password" type="password" autocomplete="current-password" placeholder="输入管理员密码" required>
+            <button class="reveal" id="reveal" type="button" title="显示密码">显示</button>
+          </div>
+        </div>
+        <button class="submit" id="submit" type="submit">登录控制台</button>
+        <div class="error" id="error" role="alert" aria-live="polite"></div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>WebBuddy Proxy</span>
+    <span>Secure administration session</span>
+  </footer>
+</div>
+<script>
+const form = document.getElementById('login-form');
+const usernameInput = document.getElementById('username');
+const passwordInput = document.getElementById('password');
+const submitButton = document.getElementById('submit');
+const errorBox = document.getElementById('error');
+const revealButton = document.getElementById('reveal');
+
+function showError(message) {
+  errorBox.textContent = message;
+  errorBox.classList.add('show');
+}
+
+revealButton.addEventListener('click', () => {
+  const showing = passwordInput.type === 'text';
+  passwordInput.type = showing ? 'password' : 'text';
+  revealButton.textContent = showing ? '显示' : '隐藏';
+  revealButton.title = showing ? '显示密码' : '隐藏密码';
+  passwordInput.focus();
+});
+
+form.addEventListener('submit', async event => {
+  event.preventDefault();
+  errorBox.classList.remove('show');
+  const username = usernameInput.value.trim();
+  const password = passwordInput.value;
+  if (!username || !password) {
+    showError('请输入用户名和密码');
+    return;
+  }
+
+  submitButton.disabled = true;
+  submitButton.textContent = '正在验证...';
+  try {
+    const response = await fetch('/api/login', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({username, password}),
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      showError(data.error || '登录失败，请稍后重试');
+      return;
+    }
+    window.location.replace('/');
+  } catch (error) {
+    showError('无法连接管理服务');
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = '登录控制台';
+  }
+});
+
+passwordInput.focus();
+</script>
+</body>
+</html>

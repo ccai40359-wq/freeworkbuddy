@@ -1,0 +1,1 @@
+﻿"""WebBuddy — codebuddy2openai 多账号管理面板 + OpenAI 兼容 API。"""
